@@ -46,8 +46,8 @@ And register that class in `fabric.mod.json`:
 
 ## NeoForge Mods menu
 
-NeoForge’s docs say a config screen is registered through `IConfigScreenFactory`, and that screen becomes available from the in-game Mods page via the Config button. [docs.neoforged](https://docs.neoforged.net/docs/1.21.1/misc/config/)
-NeoForge also allows you to provide your own custom screen there, so you can point it at the same shared YACL screen instead of using NeoForge’s default generated config UI. [docs.neoforged](https://docs.neoforged.net/docs/1.21.1/misc/config/)
+NeoForge’s docs say a config screen is registered through `IConfigScreenFactory`, and that screen becomes available from the in-game Mods page via the Config button. [docs.neoforged](https://docs.neoforged.net/docs/1.21.11/misc/config/)
+NeoForge also allows you to provide your own custom screen there, so you can point it at the same shared YACL screen instead of using NeoForge’s default generated config UI. [docs.neoforged](https://docs.neoforged.net/docs/1.21.11/misc/config/)
 
 ```java
 // neoforge
@@ -65,10 +65,3 @@ public final class MyModNeoForge {
 
 YACL supports modern loaders including Fabric and NeoForge, so using the same screen-building library across both sides is a normal setup. [boxtoplay](https://www.boxtoplay.com/en-pg/minecraft-hosting/minecraft-server/modrinth-mods/yacl-19816)
 In practice, put YACL where your shared screen code can compile, and keep Mod Menu itself as a Fabric-only dependency because the integration point is different on NeoForge. [youtube](https://www.youtube.com/watch?v=xiLy6xH4p-o)
-
-## One caveat
-
-If by “NeoForge mod menu” you mean the separate **Mod Menu (NeoForge Edition)** project, that port can already auto-detect TOML config files and expose a config menu even without explicit integration. [modrinth](https://modrinth.com/mod/mod-menu-(neoforge-edition)/version/1.0.1)
-If you want it to open your custom YACL screen rather than an auto-detected/default config UI, the NeoForge `IConfigScreenFactory` registration is still the part that matters. [modrinth](https://modrinth.com/mod/mod-menu-(neoforge-edition)/version/1.0.1)
-
-Which multiloader template are you using — Architectury or Jared’s MultiLoader-Template?

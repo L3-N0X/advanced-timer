@@ -10,7 +10,7 @@ import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent
 
 @Mod("advanced_timer")
-@EventBusSubscriber(modid = "advanced_timer", bus = EventBusSubscriber.Bus.GAME, value = [Dist.CLIENT])
+@EventBusSubscriber(modid = "advanced_timer", value = [Dist.CLIENT])
 object AdvancedTimerNeoForge {
 
     @SubscribeEvent
