@@ -4,8 +4,8 @@ plugins {
 	id("net.neoforged.moddev") version "2.0.141" apply false
 	id("maven-publish")
 	id("me.modmuss50.mod-publish-plugin") version "1.1.0"
-	id("org.jetbrains.kotlin.jvm") version "2.2.10"
-	id("com.google.devtools.ksp") version "2.2.10-2.0.2"
+	id("org.jetbrains.kotlin.jvm") version "2.3.20"
+	id("com.google.devtools.ksp") version "2.3.6"
 	id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.23" apply false
 	id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.23" apply false
 }
@@ -21,19 +21,12 @@ val isNeoForge = stonecutter.current.project.endsWith("-neoforge")
 
 sourceSets {
 	main {
-		kotlin {
-			if (isFabric) {
-				srcDir("src/fabric/kotlin")
-			} else if (isNeoForge) {
-				srcDir("src/neoforge/kotlin")
-			}
-		}
-		resources {
-			if (isFabric) {
-				srcDir("src/fabric/resources")
-			} else if (isNeoForge) {
-				srcDir("src/neoforge/resources")
-			}
+		if (isFabric) {
+			kotlin.srcDir("src/fabric/kotlin")
+			resources.srcDir("src/fabric/resources")
+		} else if (isNeoForge) {
+			kotlin.srcDir("src/neoforge/kotlin")
+			resources.srcDir("src/neoforge/resources")
 		}
 	}
 }
@@ -50,6 +43,10 @@ repositories {
 	maven {
 		name = "Xander Maven"
 		url = uri("https://maven.isxander.dev/releases")
+	}
+	maven {
+		name = "TerraformersMC Maven"
+		url = uri("https://maven.terraformersmc.com/releases")
 	}
 	maven {
 		name = "Kotlin for Forge"
@@ -74,7 +71,7 @@ if (isFabric) {
 			}
 		}
 		mods {
-			create("advanced-timer") {
+			create("advanced_timer") {
 				sourceSet(sourceSets.main.get())
 			}
 		}
@@ -89,6 +86,7 @@ dependencies {
 		"modImplementation"("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_api_version").get()}")
 		"modImplementation"("net.fabricmc:fabric-language-kotlin:${providers.gradleProperty("fabric_kotlin_version").get()}")
 		"modImplementation"("dev.isxander:yet-another-config-lib:${providers.gradleProperty("yacl_version").get()}-fabric")
+		"modImplementation"("com.terraformersmc:modmenu:17.0.0")
 	} else if (isNeoForge) {
 		"implementation"("dev.isxander:yet-another-config-lib:${providers.gradleProperty("yacl_version").get()}-neoforge")
 		"implementation"("thedarkcolour:kotlinforforge-neoforge:6.2.0")

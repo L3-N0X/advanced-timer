@@ -20,6 +20,12 @@
 				"value": "de.lenox.client.AdvancedTimerClient",
 				"adapter": "kotlin"
 			}
+		],
+		"modmenu": [
+			{
+				"value": "de.lenox.client.ModMenuIntegration",
+				"adapter": "kotlin"
+			}
 		]
 	},
 	"mixins": [

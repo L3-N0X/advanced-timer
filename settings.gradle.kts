@@ -8,18 +8,13 @@ pluginManagement {
 			name = "NeoForge"
 			url = uri("https://maven.neoforged.net/releases/")
 		}
-		maven {
-			name = "Architectury"
-			url = uri("https://maven.architectury.dev/")
-		}
 		mavenCentral()
 		gradlePluginPortal()
 		maven("https://maven.kikugie.dev/snapshots") { name = "KikuGie Snapshots" }
 	}
 
  plugins {
-		id("net.fabricmc.fabric-loom-remap") version providers.gradleProperty("loom_version")
-		id("net.neoforged.moddev") version "2.0.78-beta"
+		id("net.neoforged.moddev") version "2.0.141"
 	}
 }
 
