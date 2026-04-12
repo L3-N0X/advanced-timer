@@ -13,14 +13,8 @@
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/advanced-timer/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
-		"main": [
-			{
-				"value": "de.lenox.AdvancedTimer",
-				"adapter": "kotlin"
-			}
-		],
 		"client": [
 			{
 				"value": "de.lenox.client.AdvancedTimerClient",
@@ -29,7 +23,6 @@
 		]
 	},
 	"mixins": [
-		"advanced-timer.mixins.json",
 		{
 			"config": "advanced-timer.client.mixins.json",
 			"environment": "client"

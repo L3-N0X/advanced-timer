@@ -15,6 +15,25 @@ group = providers.gradleProperty("maven_group").get()
 def isFabric = stonecutter.current.project.endsWith("-fabric")
 def isNeoForge = stonecutter.current.project.endsWith("-neoforge")
 
+sourceSets {
+	main {
+		kotlin {
+			if (isFabric) {
+				srcDir "src/fabric/kotlin"
+			} else if (isNeoForge) {
+				srcDir "src/neoforge/kotlin"
+			}
+		}
+		resources {
+			if (isFabric) {
+				srcDir "src/fabric/resources"
+			} else if (isNeoForge) {
+				srcDir "src/neoforge/resources"
+			}
+		}
+	}
+}
+
 if (isFabric) {
 	apply plugin: "fabric-loom"
 	apply plugin: "dev.kikugie.fletching-table.fabric"
@@ -24,15 +43,17 @@ if (isFabric) {
 }
 
 repositories {
+	maven {
+		name "Xander Maven"
+		url "https://maven.isxander.dev/releases"
+	}
 }
 
 if (isFabric) {
 	loom {
-		splitEnvironmentSourceSets()
 		mods {
 			"advanced-timer" {
 				sourceSet sourceSets.main
-				sourceSet sourceSets.client
 			}
 		}
 	}
@@ -54,7 +75,9 @@ dependencies {
 		modImplementation "net.fabricmc:fabric-loader:${providers.gradleProperty('loader_version').get()}"
 		modImplementation "net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty('fabric_api_version').get()}"
 		modImplementation "net.fabricmc:fabric-language-kotlin:${providers.gradleProperty('fabric_kotlin_version').get()}"
+		modImplementation "dev.isxander:yet-another-config-lib:${providers.gradleProperty('yacl_version').get()}-fabric"
 	} else if (isNeoForge) {
+		implementation "dev.isxander:yet-another-config-lib:${providers.gradleProperty('yacl_version').get()}-neoforge"
 	}
 }
 
