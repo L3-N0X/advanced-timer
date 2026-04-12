@@ -27,7 +27,6 @@ plugins {
 	id("dev.kikugie.stonecutter") version "0.9.1-beta.5"
 }
 
-// Should match your modid
 rootProject.name = "advanced-timer"
 
 stonecutter {
