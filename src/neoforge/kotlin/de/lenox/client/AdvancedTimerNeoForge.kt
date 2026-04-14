@@ -8,6 +8,7 @@ import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.fml.common.Mod
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers
@@ -23,7 +24,7 @@ class AdvancedTimerNeoForge(container: ModContainer) {
     }
 }
 
-@EventBusSubscriber(modid = "advanced_timer", value = [Dist.CLIENT])
+@EventBusSubscriber(modid = "advanced_timer", value = [Dist.CLIENT], bus = EventBusSubscriber.Bus.MOD)
 object AdvancedTimerNeoForgeModEvents {
     @SubscribeEvent
     fun onRegisterGuiLayers(event: RegisterGuiLayersEvent) {
@@ -33,21 +34,47 @@ object AdvancedTimerNeoForgeModEvents {
     }
 }
 
-@EventBusSubscriber(modid = "advanced_timer", value = [Dist.CLIENT])
+@EventBusSubscriber(modid = "advanced_timer", value = [Dist.CLIENT], bus = EventBusSubscriber.Bus.GAME)
 object AdvancedTimerNeoForgeEvents {
+
+    @SubscribeEvent
+    fun onClientLogin(event: ClientPlayerNetworkEvent.LoggingIn) {
+        TimerManager.load()
+        if (TimerManager.isRunning || TimerManager.currentTimeMs > 0) {
+            TimerHudRenderer.isVisible = true
+        }
+    }
+
+    @SubscribeEvent
+    fun onClientLogout(event: ClientPlayerNetworkEvent.LoggingOut) {
+        TimerManager.save()
+    }
 
     @SubscribeEvent
     fun onRegisterClientCommands(event: RegisterClientCommandsEvent) {
         event.dispatcher.register(
             Commands.literal("timer")
                 .then(Commands.literal("start").executes { context ->
+                    TimerManager.reset()
+                    TimerManager.start()
                     TimerHudRenderer.isVisible = true
                     context.source.sendSystemMessage(Component.literal("Timer started"))
                     Command.SINGLE_SUCCESS
                 })
                 .then(Commands.literal("pause").executes { context ->
-                    TimerHudRenderer.isVisible = false
+                    TimerManager.pause()
                     context.source.sendSystemMessage(Component.literal("Timer paused"))
+                    Command.SINGLE_SUCCESS
+                })
+                .then(Commands.literal("continue").executes { context ->
+                    TimerManager.start()
+                    TimerHudRenderer.isVisible = true
+                    context.source.sendSystemMessage(Component.literal("Timer continued"))
+                    Command.SINGLE_SUCCESS
+                })
+                .then(Commands.literal("hide").executes { context ->
+                    TimerHudRenderer.isVisible = false
+                    context.source.sendSystemMessage(Component.literal("Timer hidden"))
                     Command.SINGLE_SUCCESS
                 })
         )
