@@ -9,7 +9,7 @@ object GlobalConfigManager {
     private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
     var config = GlobalConfig()
     private var loaded = false
-    
+
     var activeProfile: String = "default"
     var newProfileName: String = "" // Temporary for the UI
 
@@ -24,7 +24,7 @@ object GlobalConfigManager {
     private fun getConfigFile(profile: String): File {
         return File(getProfilesDir(), "$profile.json")
     }
-    
+
     fun getAvailableProfiles(): List<String> {
         val dir = getProfilesDir()
         if (!dir.exists()) return listOf("default")
@@ -33,14 +33,14 @@ object GlobalConfigManager {
         if (!names.contains("default")) names.add(0, "default")
         return names.sorted()
     }
-    
+
     fun cycleProfile() {
         val profiles = getAvailableProfiles()
         val currentIndex = profiles.indexOf(activeProfile)
         val nextIndex = if (currentIndex + 1 >= profiles.size) 0 else currentIndex + 1
         switchProfile(profiles[nextIndex])
     }
-    
+
     fun switchProfile(profile: String) {
         save() // save current
         activeProfile = profile
@@ -57,7 +57,7 @@ object GlobalConfigManager {
         save() // save new profile to disk immediately
         loadProfile(safeName)
     }
-    
+
     fun deleteCurrentProfile() {
         if (activeProfile == "default") return
         val file = getConfigFile(activeProfile)
@@ -109,7 +109,7 @@ object GlobalConfigManager {
 
     fun load() {
         loadMeta()
-        
+
         // Migrate old config if it exists and default doesn't
         val oldFile = File(Minecraft.getInstance().gameDirectory, "config/advanced_timer.json")
         if (oldFile.exists() && getAvailableProfiles().size == 1 && !getConfigFile("default").exists()) {
@@ -126,7 +126,7 @@ object GlobalConfigManager {
         } else {
             loadProfile(activeProfile)
         }
-        
+
         loaded = true
     }
 

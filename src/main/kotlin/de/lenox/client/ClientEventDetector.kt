@@ -1,21 +1,54 @@
 package de.lenox.client
 
 import net.minecraft.client.Minecraft
+import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon
 import net.minecraft.world.entity.boss.wither.WitherBoss
 import net.minecraft.world.entity.monster.ElderGuardian
 import net.minecraft.world.entity.monster.warden.Warden
-import net.minecraft.world.entity.LivingEntity
 
 object ClientEventDetector {
     private var wasDead = false
     private val seenDyingEntities = mutableSetOf<Int>()
+    private var wasCountdownZero = false
 
     fun tick(mc: Minecraft) {
         val player = mc.player ?: return
         val level = mc.level ?: return
 
         val config = GlobalConfigManager.config
+
+        // 0. Check countdown reach 0
+        if (TimerManager.currentData.direction == TimerDirection.DOWN) {
+            if (TimerManager.currentTimeMs <= 0L) {
+                if (!wasCountdownZero) {
+                    wasCountdownZero = true
+                    when (config.timerEndAction) {
+                        TimerEndAction.OFF -> {}
+                        TimerEndAction.CHAT -> {
+                            player.sendSystemMessage(
+                                    net.minecraft.network.chat.Component.literal(
+                                                    "The countdown timer has reached 0!"
+                                            )
+                                            .withColor(0xFF5555)
+                            )
+                        }
+                        TimerEndAction.TITLE -> {
+                            mc.gui.setTitle(
+                                    net.minecraft.network.chat.Component.literal("Timer stopped!")
+                                            .withColor(0xFF5555)
+                            )
+                            mc.gui.setSubtitle(net.minecraft.network.chat.Component.empty())
+                            mc.gui.setTimes(10, 70, 20)
+                        }
+                    }
+                }
+            } else {
+                wasCountdownZero = false
+            }
+        } else {
+            wasCountdownZero = false
+        }
 
         // 1. Check player death
         val isDead = player.isDeadOrDying
@@ -27,8 +60,11 @@ object ClientEventDetector {
         wasDead = isDead
 
         // 2. Check boss kills
-        if (!config.autoPauseOnDragonKill && !config.autoPauseOnWitherKill && 
-            !config.autoPauseOnElderGuardianKill && !config.autoPauseOnWardenKill) {
+        if (!config.autoPauseOnDragonKill &&
+                        !config.autoPauseOnWitherKill &&
+                        !config.autoPauseOnElderGuardianKill &&
+                        !config.autoPauseOnWardenKill
+        ) {
             return
         }
 
@@ -54,9 +90,10 @@ object ClientEventDetector {
             }
         }
     }
-    
+
     fun reset() {
         wasDead = false
         seenDyingEntities.clear()
+        wasCountdownZero = false
     }
 }

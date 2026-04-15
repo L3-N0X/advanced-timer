@@ -107,7 +107,7 @@ object TimerHudRenderer {
                 }
 
                 val offsetProgress = if (width > 0) (currentX - x) / width.toFloat() else 0f
-                var factor = offsetProgress.toDouble()
+                var factor = offsetProgress.toDouble() * (config.gradientVisibility / 100.0) - 0.25
 
                 if (config.animateGradient) {
                     val timeModulo = time % 3000000L

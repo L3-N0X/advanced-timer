@@ -130,10 +130,64 @@ tasks.named<Jar>("jar").configure {
 	}
 }
 
-publishing {
-	publications {
-		create<MavenPublication>("mavenJava") {
-			from(components["java"])
+publishMods {
+	// 1. Set the release file based on the active loader
+	if (isFabric) {
+		// Fabric Loom outputs the final mod to the remapJar task
+		file.set(tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar").get().archiveFile)
+		modLoaders.add("fabric")
+	} else if (isNeoForge) {
+		// NeoForge ModDevGradle outputs the final mod to the standard jar task
+		file.set(tasks.named<Jar>("jar").get().archiveFile)
+		modLoaders.add("neoforge")
+	}
+
+	// 2. Read the changelog file from your root project folder
+	val changelogFile = rootProject.file("CHANGELOG.md")
+	if (changelogFile.exists()) {
+		changelog.set(changelogFile.readText())
+	} else {
+		changelog.set("No changelog provided for this release.")
+	}
+
+	// Set release type (STABLE, BETA, or ALPHA)
+	type.set(me.modmuss50.mpp.ReleaseType.STABLE)
+
+	val mcVersion = providers.gradleProperty("minecraft_version").get()
+
+	// 3. Modrinth Configuration
+	val modrinthToken = providers.environmentVariable("MODRINTH_TOKEN")
+	if (modrinthToken.isPresent) {
+		modrinth {
+			accessToken.set(modrinthToken)
+			projectId.set("advanced-timer") // Replace with your actual project ID
+			minecraftVersions.add(mcVersion)
+
+			// Adapt dependencies based on the loader
+			if (isFabric) {
+				requires("fabric-api")
+				requires("yacl") // Make sure the slug matches Modrinth's URL exactly
+				optional("modmenu")
+			} else if (isNeoForge) {
+				requires("yacl")
+			}
+		}
+	}
+
+	// 4. CurseForge Configuration (Optional, if you also want to publish there)
+	val curseforgeToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+	if (curseforgeToken.isPresent) {
+		curseforge {
+			accessToken.set(curseforgeToken)
+			projectId.set("YOUR_CURSEFORGE_ID_HERE")
+			minecraftVersions.add(mcVersion)
+
+			if (isFabric) {
+				requires("fabric-api")
+				requires("yacl")
+			} else if (isNeoForge) {
+				requires("yacl")
+			}
 		}
 	}
 }

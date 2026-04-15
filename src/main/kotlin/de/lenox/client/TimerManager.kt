@@ -53,7 +53,8 @@ object TimerManager {
 
     fun setTimeMs(ms: Long) {
         val targetMs = kotlin.math.max(0L, ms)
-        val runningOffset = if (currentData.isRunning) (System.currentTimeMillis() - currentData.lastStartTimeMs) else 0L
+        val runningOffset =
+            if (currentData.isRunning) (System.currentTimeMillis() - currentData.lastStartTimeMs) else 0L
         if (currentData.direction == TimerDirection.DOWN) {
             currentData.accumulatedTimeMs = currentData.countdownStartTimeMs - targetMs - runningOffset
         } else {
@@ -73,20 +74,18 @@ object TimerManager {
     private fun getSaveFile(): File? {
         val mc = Minecraft.getInstance()
         val server = mc.singleplayerServer
-        
-        if (server != null) {
-            // It's a singleplayer world
+
+        if (server != null) { // It's a singleplayer world
             val levelName = server.worldData.levelName.replace("[^a-zA-Z0-9.-]".toRegex(), "_")
             return File(mc.gameDirectory, "advanced_timer/saves/$levelName/timer.json")
         }
-        
+
         val currentServer = mc.currentServer
-        if (currentServer != null) {
-            // It's a multiplayer server
+        if (currentServer != null) { // It's a multiplayer server
             val ip = currentServer.ip.replace("[^a-zA-Z0-9.-]".toRegex(), "_")
             return File(mc.gameDirectory, "advanced_timer/servers/$ip/timer.json")
         }
-        
+
         return null
     }
 

@@ -1,12 +1,13 @@
 package de.lenox.client
 
 data class GlobalConfig(
-    var timerColor: Int = 0xFFFFFFFF.toInt(),
-    var secondTimerColor: Int = 0xFFFF0000.toInt(),
+    var timerColor: Int = 0xFF8fe163.toInt(),
+    var secondTimerColor: Int = 0xFF00ecd0.toInt(),
     var enableGradient: Boolean = false,
     var animateGradient: Boolean = true,
     var animationSpeed: Float = 1.0f,
-    var timerBold: Boolean = false,
+    var gradientVisibility: Int = 50,
+    var timerBold: Boolean = true,
     var timerFormat: TimerFormat = TimerFormat.HH_MM_SS,
     var pauseOnLeave: Boolean = true,
     var showPausedState: Boolean = false,
@@ -14,7 +15,7 @@ data class GlobalConfig(
     var changePausedColor: Boolean = false,
     var pausedColor: Int = 0xFFAAAAAA.toInt(),
     var timerDirection: TimerDirection = TimerDirection.UP,
-    var countdownHours: Int = 0,
+    var countdownHours: Int = 1,
     var countdownMinutes: Int = 0,
     var countdownSeconds: Int = 0,
     var timerPosition: TimerPosition = TimerPosition.ABOVE_ACTION_BAR,
@@ -26,5 +27,7 @@ data class GlobalConfig(
     var autoPauseOnWitherKill: Boolean = false,
     var autoPauseOnElderGuardianKill: Boolean = false,
     var autoPauseOnWardenKill: Boolean = false,
-    var autoPauseOnDeath: Boolean = false
+    var autoPauseOnDeath: Boolean = false,
+    var showCommandFeedback: Boolean = true,
+    var timerEndAction: TimerEndAction = TimerEndAction.CHAT
 )
