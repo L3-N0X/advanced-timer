@@ -26,11 +26,11 @@ object ClientEventDetector {
                     when (config.timerEndAction) {
                         TimerEndAction.OFF -> {}
                         TimerEndAction.CHAT -> {
-                            player.sendSystemMessage(
+                            player.displayClientMessage(
                                     net.minecraft.network.chat.Component.literal(
                                                     "The countdown timer has reached 0!"
                                             )
-                                            .withColor(0xFF5555)
+                                            .withColor(0xFF5555),false
                             )
                         }
                         TimerEndAction.TITLE -> {
