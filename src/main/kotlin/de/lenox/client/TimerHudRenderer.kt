@@ -7,18 +7,6 @@ import net.minecraft.network.chat.Component
 object TimerHudRenderer {
     var isVisible: Boolean = false
 
-    private fun formatTime(ms: Long): String {
-        val totalSeconds = ms / 1000
-        val hours = totalSeconds / 3600
-        val minutes = (totalSeconds % 3600) / 60
-        val seconds = totalSeconds % 60
-        return if (hours > 0) {
-            String.format("%02d:%02d:%02d", hours, minutes, seconds)
-        } else {
-            String.format("%02d:%02d", minutes, seconds)
-        }
-    }
-
     fun render(graphics: GuiGraphics) {
         if (!isVisible) return
 
@@ -26,21 +14,123 @@ object TimerHudRenderer {
 
         val mc = Minecraft.getInstance()
         val font = mc.font
-        
-        val timeString = formatTime(TimerManager.currentTimeMs)
-        val textString = "$timeString - Timer"
-        
+
+        val config = GlobalConfigManager.config
+
+        if (TimerManager.isRunning && TimerManager.currentData.direction == TimerDirection.DOWN) {
+            if (TimerManager.currentTimeMs <= 0L) {
+                TimerManager.pause()
+            }
+        }
+
+        val isPaused = !TimerManager.isRunning && TimerManager.currentTimeMs > 0L
+
+        val timeString = config.timerFormat.format(TimerManager.currentTimeMs)
+        var textString = timeString
+
+        if (isPaused && config.showPausedState) {
+            textString += config.pausedSuffix
+        }
+
         var textComponent = Component.literal(textString)
-        if (GlobalConfigManager.config.timerBold) {
+        if (config.timerBold) {
             textComponent = textComponent.withStyle(net.minecraft.ChatFormatting.BOLD)
         }
-        
+
         val width = font.width(textComponent)
-        val color = GlobalConfigManager.config.timerColor
-        
-        val x = (graphics.guiWidth() - width) / 2
-        val y = graphics.guiHeight() - 80
-        
-        graphics.drawString(font, textComponent, x, y, color, true)
+        val overrideColor = isPaused && config.changePausedColor
+        val color = (if (overrideColor) config.pausedColor else config.timerColor) or 0xFF000000.toInt()
+
+        val x: Int
+        val y: Int
+
+        when (config.timerPosition) {
+            TimerPosition.TOP_CENTER -> {
+                x = (graphics.guiWidth() - width) / 2
+                y = 10
+            }
+
+            TimerPosition.BELOW_ACTION_BAR -> {
+                x = (graphics.guiWidth() - width) / 2
+                y = graphics.guiHeight() - 50
+            }
+
+            TimerPosition.ABOVE_ACTION_BAR -> {
+                x = (graphics.guiWidth() - width) / 2
+                y = graphics.guiHeight() - 80
+            }
+
+            TimerPosition.TOP_LEFT -> {
+                x = 10
+                y = 10
+            }
+
+            TimerPosition.TOP_RIGHT -> {
+                x = graphics.guiWidth() - width - 10
+                y = 10
+            }
+
+            TimerPosition.CUSTOM -> {
+                if (config.customPosLeft > 0) {
+                    if (config.customPosLeft == 50) x = (graphics.guiWidth() - width) / 2
+                    else x = graphics.guiWidth() * config.customPosLeft / 100
+                } else if (config.customPosRight > 0) {
+                    if (config.customPosRight == 50) x = (graphics.guiWidth() - width) / 2
+                    else x = graphics.guiWidth() - width - (graphics.guiWidth() * config.customPosRight / 100)
+                } else {
+                    x = (graphics.guiWidth() - width) / 2
+                }
+
+                if (config.customPosTop > 0) {
+                    if (config.customPosTop == 50) y = (graphics.guiHeight() - font.lineHeight) / 2
+                    else y = graphics.guiHeight() * config.customPosTop / 100
+                } else if (config.customPosBottom > 0) {
+                    if (config.customPosBottom == 50) y = (graphics.guiHeight() - font.lineHeight) / 2
+                    else y =
+                        graphics.guiHeight() - font.lineHeight - (graphics.guiHeight() * config.customPosBottom / 100)
+                } else {
+                    y = 10
+                }
+            }
+        }
+
+        if (config.enableGradient && !overrideColor) {
+            var currentX = x.toFloat()
+            val time = System.currentTimeMillis()
+
+            for (i in textString.indices) {
+                val char = textString[i].toString()
+
+                var charComponent = Component.literal(char)
+                if (config.timerBold) {
+                    charComponent = charComponent.withStyle(net.minecraft.ChatFormatting.BOLD)
+                }
+
+                val offsetProgress = if (width > 0) (currentX - x) / width.toFloat() else 0f
+                var factor = offsetProgress.toDouble()
+
+                if (config.animateGradient) {
+                    val timeModulo = time % 3000000L
+                    val timeProgress = (timeModulo.toDouble() * config.animationSpeed.toDouble() / 3000.0)
+                    factor -= timeProgress
+                }
+
+                val sineFactor = (Math.sin(factor * Math.PI * 2.0) + 1.0) / 2.0
+
+                val c1 = config.timerColor
+                val c2 = config.secondTimerColor
+
+                val r = ((c1 shr 16 and 0xFF) + ((c2 shr 16 and 0xFF) - (c1 shr 16 and 0xFF)) * sineFactor).toInt()
+                val g = ((c1 shr 8 and 0xFF) + ((c2 shr 8 and 0xFF) - (c1 shr 8 and 0xFF)) * sineFactor).toInt()
+                val b = ((c1 and 0xFF) + ((c2 and 0xFF) - (c1 and 0xFF)) * sineFactor).toInt()
+
+                val finalColor = 0xFF000000.toInt() or (r shl 16) or (g shl 8) or b
+
+                graphics.drawString(font, charComponent, currentX.toInt(), y, finalColor, true)
+                currentX += font.width(charComponent)
+            }
+        } else {
+            graphics.drawString(font, textComponent, x, y, color, true)
+        }
     }
 }

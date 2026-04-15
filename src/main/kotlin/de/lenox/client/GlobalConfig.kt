@@ -1,6 +1,30 @@
 package de.lenox.client
 
 data class GlobalConfig(
-    var timerColor: Int = 0xFFFFFF,
-    var timerBold: Boolean = false
+    var timerColor: Int = 0xFFFFFFFF.toInt(),
+    var secondTimerColor: Int = 0xFFFF0000.toInt(),
+    var enableGradient: Boolean = false,
+    var animateGradient: Boolean = true,
+    var animationSpeed: Float = 1.0f,
+    var timerBold: Boolean = false,
+    var timerFormat: TimerFormat = TimerFormat.HH_MM_SS,
+    var pauseOnLeave: Boolean = true,
+    var showPausedState: Boolean = false,
+    var pausedSuffix: String = " (paused)",
+    var changePausedColor: Boolean = false,
+    var pausedColor: Int = 0xFFAAAAAA.toInt(),
+    var timerDirection: TimerDirection = TimerDirection.UP,
+    var countdownHours: Int = 0,
+    var countdownMinutes: Int = 0,
+    var countdownSeconds: Int = 0,
+    var timerPosition: TimerPosition = TimerPosition.ABOVE_ACTION_BAR,
+    var customPosTop: Int = 0,
+    var customPosRight: Int = 0,
+    var customPosBottom: Int = 0,
+    var customPosLeft: Int = 0,
+    var autoPauseOnDragonKill: Boolean = false,
+    var autoPauseOnWitherKill: Boolean = false,
+    var autoPauseOnElderGuardianKill: Boolean = false,
+    var autoPauseOnWardenKill: Boolean = false,
+    var autoPauseOnDeath: Boolean = false
 )

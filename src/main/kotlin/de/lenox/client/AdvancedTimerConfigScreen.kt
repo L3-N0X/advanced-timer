@@ -2,10 +2,15 @@ package de.lenox.client
 
 import dev.isxander.yacl3.api.ConfigCategory
 import dev.isxander.yacl3.api.Option
+import dev.isxander.yacl3.api.ButtonOption
 import dev.isxander.yacl3.api.OptionDescription
 import dev.isxander.yacl3.api.YetAnotherConfigLib
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
+import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder
+import dev.isxander.yacl3.api.controller.EnumControllerBuilder
+import dev.isxander.yacl3.api.controller.StringControllerBuilder
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import java.awt.Color
@@ -30,6 +35,129 @@ object AdvancedTimerConfigScreen {
                     .controller { opt -> ColorControllerBuilder.create(opt).allowAlpha(false) }
                     .build()
                 )
+                .option(Option.createBuilder<Color>()
+                    .name(Component.literal("Second Timer Color"))
+                    .description(OptionDescription.of(Component.literal("Sets the second color of the timer text for the gradient.")))
+                    .binding(
+                        Color.RED,
+                        { Color(GlobalConfigManager.config.secondTimerColor) },
+                        { newVal -> GlobalConfigManager.config.secondTimerColor = newVal.rgb }
+                    )
+                    .controller { opt -> ColorControllerBuilder.create(opt).allowAlpha(false) }
+                    .build()
+                )
+                .option(Option.createBuilder<Boolean>()
+                    .name(Component.literal("Enable Gradient"))
+                    .description(OptionDescription.of(Component.literal("Enables the gradient for the timer text.")))
+                    .binding(
+                        false,
+                        { GlobalConfigManager.config.enableGradient },
+                        { newVal -> GlobalConfigManager.config.enableGradient = newVal }
+                    )
+                    .controller { opt -> TickBoxControllerBuilder.create(opt) }
+                    .build()
+                )
+                .option(Option.createBuilder<Boolean>()
+                    .name(Component.literal("Animate Gradient"))
+                    .description(OptionDescription.of(Component.literal("Animates the gradient to flow across the text.")))
+                    .binding(
+                        true,
+                        { GlobalConfigManager.config.animateGradient },
+                        { newVal -> GlobalConfigManager.config.animateGradient = newVal }
+                    )
+                    .controller { opt -> TickBoxControllerBuilder.create(opt) }
+                    .build()
+                )
+                .option(Option.createBuilder<Float>()
+                    .name(Component.literal("Animation Speed"))
+                    .description(OptionDescription.of(Component.literal("Controls the speed of the gradient animation.")))
+                    .binding(
+                        1.0f,
+                        { GlobalConfigManager.config.animationSpeed },
+                        { newVal -> GlobalConfigManager.config.animationSpeed = newVal }
+                    )
+                    .controller { opt -> FloatSliderControllerBuilder.create(opt).range(0.1f, 10.0f).step(0.1f) }
+                    .build()
+                )
+                .option(Option.createBuilder<TimerDirection>()
+                    .name(Component.literal("Timer Direction"))
+                    .description(OptionDescription.of(Component.literal("Set whether the timer counts up or down.")))
+                    .binding(
+                        TimerDirection.UP,
+                        { if (net.minecraft.client.Minecraft.getInstance().level != null) TimerManager.currentData.direction else GlobalConfigManager.config.timerDirection },
+                        { newVal ->
+                            GlobalConfigManager.config.timerDirection = newVal
+                            if (net.minecraft.client.Minecraft.getInstance().level != null) {
+                                TimerManager.currentData.direction = newVal
+                                TimerManager.save()
+                            }
+                        }
+                    )
+                    .controller { opt -> EnumControllerBuilder.create(opt).enumClass(TimerDirection::class.java).formatValue { Component.literal(it.displayName) } }
+                    .build()
+                )
+                .option(Option.createBuilder<Int>()
+                    .name(Component.literal("Countdown Hours"))
+                    .description(OptionDescription.of(Component.literal("The number of hours to count down from.")))
+                    .binding(
+                        0,
+                        { if (net.minecraft.client.Minecraft.getInstance().level != null) TimerManager.currentData.countdownHours else GlobalConfigManager.config.countdownHours },
+                        { newVal ->
+                            GlobalConfigManager.config.countdownHours = newVal
+                            if (net.minecraft.client.Minecraft.getInstance().level != null) {
+                                TimerManager.currentData.countdownHours = newVal
+                                TimerManager.save()
+                            }
+                        }
+                    )
+                    .controller { opt -> IntegerSliderControllerBuilder.create(opt).range(0, 99).step(1) }
+                    .build()
+                )
+                .option(Option.createBuilder<Int>()
+                    .name(Component.literal("Countdown Minutes"))
+                    .description(OptionDescription.of(Component.literal("The number of minutes to count down from.")))
+                    .binding(
+                        0,
+                        { if (net.minecraft.client.Minecraft.getInstance().level != null) TimerManager.currentData.countdownMinutes else GlobalConfigManager.config.countdownMinutes },
+                        { newVal ->
+                            GlobalConfigManager.config.countdownMinutes = newVal
+                            if (net.minecraft.client.Minecraft.getInstance().level != null) {
+                                TimerManager.currentData.countdownMinutes = newVal
+                                TimerManager.save()
+                            }
+                        }
+                    )
+                    .controller { opt -> IntegerSliderControllerBuilder.create(opt).range(0, 59).step(1) }
+                    .build()
+                )
+                .option(Option.createBuilder<Int>()
+                    .name(Component.literal("Countdown Seconds"))
+                    .description(OptionDescription.of(Component.literal("The number of seconds to count down from.")))
+                    .binding(
+                        0,
+                        { if (net.minecraft.client.Minecraft.getInstance().level != null) TimerManager.currentData.countdownSeconds else GlobalConfigManager.config.countdownSeconds },
+                        { newVal ->
+                            GlobalConfigManager.config.countdownSeconds = newVal
+                            if (net.minecraft.client.Minecraft.getInstance().level != null) {
+                                TimerManager.currentData.countdownSeconds = newVal
+                                TimerManager.save()
+                            }
+                        }
+                    )
+                    .controller { opt -> IntegerSliderControllerBuilder.create(opt).range(0, 59).step(1) }
+                    .build()
+                )
+                .option(Option.createBuilder<TimerFormat>()
+                    .name(Component.literal("Timer Format"))
+                    .description(OptionDescription.of(Component.literal("Select the format for displaying the timer.")))
+                    .binding(
+                        TimerFormat.HH_MM_SS,
+                        { GlobalConfigManager.config.timerFormat },
+                        { newVal -> GlobalConfigManager.config.timerFormat = newVal }
+                    )
+                    .controller { opt -> EnumControllerBuilder.create(opt).enumClass(TimerFormat::class.java).formatValue { Component.literal(it.displayName) } }
+                    .build()
+                )
                 .option(Option.createBuilder<Boolean>()
                     .name(Component.literal("Bold Text"))
                     .description(OptionDescription.of(Component.literal("Makes the timer text bold.")))
@@ -39,6 +167,220 @@ object AdvancedTimerConfigScreen {
                         { newVal -> GlobalConfigManager.config.timerBold = newVal }
                     )
                     .controller { opt -> TickBoxControllerBuilder.create(opt) }
+                    .build()
+                )
+                .option(Option.createBuilder<Boolean>()
+                    .name(Component.literal("Pause on Leave"))
+                    .description(OptionDescription.of(Component.literal("Automatically pause the timer when leaving the world or server.")))
+                    .binding(
+                        true,
+                        { GlobalConfigManager.config.pauseOnLeave },
+                        { newVal -> GlobalConfigManager.config.pauseOnLeave = newVal }
+                    )
+                    .controller { opt -> TickBoxControllerBuilder.create(opt) }
+                    .build()
+                )
+                .option(Option.createBuilder<Boolean>()
+                    .name(Component.literal("Show Paused State"))
+                    .description(OptionDescription.of(Component.literal("Appends a suffix when the timer is paused.")))
+                    .binding(
+                        false,
+                        { GlobalConfigManager.config.showPausedState },
+                        { newVal -> GlobalConfigManager.config.showPausedState = newVal }
+                    )
+                    .controller { opt -> TickBoxControllerBuilder.create(opt) }
+                    .build()
+                )
+                .option(Option.createBuilder<String>()
+                    .name(Component.literal("Paused Suffix"))
+                    .description(OptionDescription.of(Component.literal("The text added to the end of the timer when paused.")))
+                    .binding(
+                        " (paused)",
+                        { GlobalConfigManager.config.pausedSuffix },
+                        { newVal -> GlobalConfigManager.config.pausedSuffix = newVal }
+                    )
+                    .controller { opt -> StringControllerBuilder.create(opt) }
+                    .build()
+                )
+                .option(Option.createBuilder<Boolean>()
+                    .name(Component.literal("Change Paused Color"))
+                    .description(OptionDescription.of(Component.literal("Changes the color of the timer when paused.")))
+                    .binding(
+                        false,
+                        { GlobalConfigManager.config.changePausedColor },
+                        { newVal -> GlobalConfigManager.config.changePausedColor = newVal }
+                    )
+                    .controller { opt -> TickBoxControllerBuilder.create(opt) }
+                    .build()
+                )
+                .option(Option.createBuilder<Color>()
+                    .name(Component.literal("Paused Color"))
+                    .description(OptionDescription.of(Component.literal("The color of the timer when paused.")))
+                    .binding(
+                        Color.GRAY,
+                        { Color(GlobalConfigManager.config.pausedColor) },
+                        { newVal -> GlobalConfigManager.config.pausedColor = newVal.rgb }
+                    )
+                    .controller { opt -> ColorControllerBuilder.create(opt).allowAlpha(false) }
+                    .build()
+                )
+                .build())
+            .category(ConfigCategory.createBuilder()
+                .name(Component.literal("Position"))
+                .option(Option.createBuilder<TimerPosition>()
+                    .name(Component.literal("Timer Position"))
+                    .description(OptionDescription.of(Component.literal("Select where the timer should be displayed. Custom mode uses the percentage offsets below (0-100).")))
+                    .binding(
+                        TimerPosition.ABOVE_ACTION_BAR,
+                        { GlobalConfigManager.config.timerPosition },
+                        { newVal -> GlobalConfigManager.config.timerPosition = newVal }
+                    )
+                    .controller { opt -> EnumControllerBuilder.create(opt).enumClass(TimerPosition::class.java).formatValue { Component.literal(it.displayName) } }
+                    .build()
+                )
+                .option(Option.createBuilder<Int>()
+                    .name(Component.literal("Custom Top Offset (%)"))
+                    .description(OptionDescription.of(Component.literal("Percentage from the top. 50 places it in the middle.")))
+                    .binding(
+                        0,
+                        { GlobalConfigManager.config.customPosTop },
+                        { newVal -> GlobalConfigManager.config.customPosTop = newVal }
+                    )
+                    .controller { opt -> IntegerSliderControllerBuilder.create(opt).range(0, 100).step(1) }
+                    .build()
+                )
+                .option(Option.createBuilder<Int>()
+                    .name(Component.literal("Custom Left Offset (%)"))
+                    .description(OptionDescription.of(Component.literal("Percentage from the left. 50 places it in the middle. (Overrides Right offset)")))
+                    .binding(
+                        0,
+                        { GlobalConfigManager.config.customPosLeft },
+                        { newVal -> GlobalConfigManager.config.customPosLeft = newVal }
+                    )
+                    .controller { opt -> IntegerSliderControllerBuilder.create(opt).range(0, 100).step(1) }
+                    .build()
+                )
+                .option(Option.createBuilder<Int>()
+                    .name(Component.literal("Custom Right Offset (%)"))
+                    .description(OptionDescription.of(Component.literal("Percentage from the right. 50 places it in the middle. (Ignored if Left > 0)")))
+                    .binding(
+                        0,
+                        { GlobalConfigManager.config.customPosRight },
+                        { newVal -> GlobalConfigManager.config.customPosRight = newVal }
+                    )
+                    .controller { opt -> IntegerSliderControllerBuilder.create(opt).range(0, 100).step(1) }
+                    .build()
+                )
+                .option(Option.createBuilder<Int>()
+                    .name(Component.literal("Custom Bottom Offset (%)"))
+                    .description(OptionDescription.of(Component.literal("Percentage from the bottom. 50 places it in the middle. (Ignored if Top > 0)")))
+                    .binding(
+                        0,
+                        { GlobalConfigManager.config.customPosBottom },
+                        { newVal -> GlobalConfigManager.config.customPosBottom = newVal }
+                    )
+                    .controller { opt -> IntegerSliderControllerBuilder.create(opt).range(0, 100).step(1) }
+                    .build()
+                )
+                .build())
+            .category(ConfigCategory.createBuilder()
+                .name(Component.literal("Events"))
+                .option(Option.createBuilder<Boolean>()
+                    .name(Component.literal("Auto-Pause on Player Death"))
+                    .description(OptionDescription.of(Component.literal("Automatically pauses the timer when the player dies.")))
+                    .binding(
+                        false,
+                        { GlobalConfigManager.config.autoPauseOnDeath },
+                        { newVal -> GlobalConfigManager.config.autoPauseOnDeath = newVal }
+                    )
+                    .controller { opt -> TickBoxControllerBuilder.create(opt) }
+                    .build()
+                )
+                .option(Option.createBuilder<Boolean>()
+                    .name(Component.literal("Auto-Pause on Ender Dragon Kill"))
+                    .description(OptionDescription.of(Component.literal("Automatically pauses the timer when the Ender Dragon is killed.")))
+                    .binding(
+                        false,
+                        { GlobalConfigManager.config.autoPauseOnDragonKill },
+                        { newVal -> GlobalConfigManager.config.autoPauseOnDragonKill = newVal }
+                    )
+                    .controller { opt -> TickBoxControllerBuilder.create(opt) }
+                    .build()
+                )
+                .option(Option.createBuilder<Boolean>()
+                    .name(Component.literal("Auto-Pause on Wither Kill"))
+                    .description(OptionDescription.of(Component.literal("Automatically pauses the timer when a Wither is killed.")))
+                    .binding(
+                        false,
+                        { GlobalConfigManager.config.autoPauseOnWitherKill },
+                        { newVal -> GlobalConfigManager.config.autoPauseOnWitherKill = newVal }
+                    )
+                    .controller { opt -> TickBoxControllerBuilder.create(opt) }
+                    .build()
+                )
+                .option(Option.createBuilder<Boolean>()
+                    .name(Component.literal("Auto-Pause on Elder Guardian Kill"))
+                    .description(OptionDescription.of(Component.literal("Automatically pauses the timer when an Elder Guardian is killed.")))
+                    .binding(
+                        false,
+                        { GlobalConfigManager.config.autoPauseOnElderGuardianKill },
+                        { newVal -> GlobalConfigManager.config.autoPauseOnElderGuardianKill = newVal }
+                    )
+                    .controller { opt -> TickBoxControllerBuilder.create(opt) }
+                    .build()
+                )
+                .option(Option.createBuilder<Boolean>()
+                    .name(Component.literal("Auto-Pause on Warden Kill"))
+                    .description(OptionDescription.of(Component.literal("Automatically pauses the timer when a Warden is killed.")))
+                    .binding(
+                        false,
+                        { GlobalConfigManager.config.autoPauseOnWardenKill },
+                        { newVal -> GlobalConfigManager.config.autoPauseOnWardenKill = newVal }
+                    )
+                    .controller { opt -> TickBoxControllerBuilder.create(opt) }
+                    .build()
+                )
+                .build())
+            .category(ConfigCategory.createBuilder()
+                .name(Component.literal("Profiles"))
+                .option(ButtonOption.createBuilder()
+                    .name(Component.literal("Active Profile: ${GlobalConfigManager.activeProfile}"))
+                    .description(OptionDescription.of(Component.literal("Click to cycle to the next available profile. Available profiles: ${GlobalConfigManager.getAvailableProfiles().joinToString(", ")}")))
+                    .action { yaclScreen, _ ->
+                        GlobalConfigManager.cycleProfile()
+                        net.minecraft.client.Minecraft.getInstance().setScreen(AdvancedTimerConfigScreen.create(yaclScreen))
+                    }
+                    .build()
+                )
+                .option(Option.createBuilder<String>()
+                    .name(Component.literal("New Profile Name"))
+                    .description(OptionDescription.of(Component.literal("Enter a name for the new profile here, then click 'Create Profile'.")))
+                    .binding(
+                        "",
+                        { GlobalConfigManager.newProfileName },
+                        { newVal -> GlobalConfigManager.newProfileName = newVal }
+                    )
+                    .controller { opt -> StringControllerBuilder.create(opt) }
+                    .build()
+                )
+                .option(ButtonOption.createBuilder()
+                    .name(Component.literal("Create Profile"))
+                    .description(OptionDescription.of(Component.literal("Click to save current settings into the new profile.")))
+                    .action { yaclScreen, _ ->
+                        if (GlobalConfigManager.newProfileName.isNotBlank()) {
+                            GlobalConfigManager.createAndSwitchProfile(GlobalConfigManager.newProfileName)
+                            net.minecraft.client.Minecraft.getInstance().setScreen(AdvancedTimerConfigScreen.create(yaclScreen))
+                        }
+                    }
+                    .build()
+                )
+                .option(ButtonOption.createBuilder()
+                    .name(Component.literal("Delete Current Profile"))
+                    .description(OptionDescription.of(Component.literal("Click to delete the current active profile (cannot delete 'default').")))
+                    .action { yaclScreen, _ ->
+                        GlobalConfigManager.deleteCurrentProfile()
+                        net.minecraft.client.Minecraft.getInstance().setScreen(AdvancedTimerConfigScreen.create(yaclScreen))
+                    }
                     .build()
                 )
                 .build())

@@ -3,9 +3,9 @@
 	"id": "advanced-timer",
 	"version": "${version}",
 	"name": "Advanced Timer",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Adds a timer with many features like placing it anywhere on the screen, changing its color, auto-pausing and more.",
 	"authors": [
-		"Me!"
+		"L3-N0X"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",

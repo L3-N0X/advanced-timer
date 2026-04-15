@@ -7,9 +7,9 @@ issueTrackerURL="https://github.com/Me/advanced-timer/issues"
 modId="advanced_timer"
 version="${version}"
 displayName="Advanced Timer"
-authors="Me!"
+authors="L3-N0X"
 description='''
-This is an example description! Tell everyone what your mod is about!
+Adds a timer with many features like placing it anywhere on the screen, changing its color, auto-pausing and more.
 '''
 
 [[dependencies.advanced_timer]]

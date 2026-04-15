@@ -7,17 +7,21 @@ import java.io.File
 
 object TimerManager {
     private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
-    private var currentData = TimerData()
+    var currentData = TimerData()
 
     val isRunning: Boolean
         get() = currentData.isRunning
 
     val currentTimeMs: Long
         get() {
+            var elapsedMs = currentData.accumulatedTimeMs
             if (currentData.isRunning) {
-                return currentData.accumulatedTimeMs + (System.currentTimeMillis() - currentData.lastStartTimeMs)
+                elapsedMs += (System.currentTimeMillis() - currentData.lastStartTimeMs)
             }
-            return currentData.accumulatedTimeMs
+            if (currentData.direction == TimerDirection.DOWN) {
+                return kotlin.math.max(0L, currentData.countdownStartTimeMs - elapsedMs)
+            }
+            return elapsedMs
         }
 
     fun start() {
@@ -37,8 +41,33 @@ object TimerManager {
     }
 
     fun reset() {
-        currentData = TimerData()
+        val config = GlobalConfigManager.config
+        currentData = TimerData(
+            direction = config.timerDirection,
+            countdownHours = config.countdownHours,
+            countdownMinutes = config.countdownMinutes,
+            countdownSeconds = config.countdownSeconds
+        )
         save()
+    }
+
+    fun setTimeMs(ms: Long) {
+        val targetMs = kotlin.math.max(0L, ms)
+        val runningOffset = if (currentData.isRunning) (System.currentTimeMillis() - currentData.lastStartTimeMs) else 0L
+        if (currentData.direction == TimerDirection.DOWN) {
+            currentData.accumulatedTimeMs = currentData.countdownStartTimeMs - targetMs - runningOffset
+        } else {
+            currentData.accumulatedTimeMs = targetMs - runningOffset
+        }
+        save()
+    }
+
+    fun addTimeMs(ms: Long) {
+        setTimeMs(currentTimeMs + ms)
+    }
+
+    fun subtractTimeMs(ms: Long) {
+        setTimeMs(currentTimeMs - ms)
     }
 
     private fun getSaveFile(): File? {
