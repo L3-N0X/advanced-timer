@@ -37,7 +37,7 @@ object AdvancedTimerConfigScreen {
                                         "Sets the color of the timer text."
                                     )
                                 )
-                            ).binding(Color.WHITE, {
+                            ).binding(Color(0x99DE5D), {
                                 Color(
                                     GlobalConfigManager.config.timerColor
                                 )
@@ -59,7 +59,7 @@ object AdvancedTimerConfigScreen {
                                     "Sets the second color of the timer text for the gradient."
                                 )
                             )
-                        ).binding(Color.RED, {
+                        ).binding(Color(0x22A6E5), {
                             Color(
                                 GlobalConfigManager.config.secondTimerColor
                             )
@@ -85,7 +85,7 @@ object AdvancedTimerConfigScreen {
                                         "Enables the gradient for the timer text."
                                     )
                                 )
-                            ).binding(false, {
+                            ).binding(true, {
                                 GlobalConfigManager.config.enableGradient
                             }, { newVal ->
                                 GlobalConfigManager.config.enableGradient = newVal
@@ -190,7 +190,7 @@ object AdvancedTimerConfigScreen {
                                     "Makes the timer text bold."
                                 )
                             )
-                        ).binding(false, {
+                        ).binding(true, {
                             GlobalConfigManager.config.timerBold
                         }, { newVal ->
                             GlobalConfigManager.config.timerBold = newVal
@@ -198,37 +198,6 @@ object AdvancedTimerConfigScreen {
                             TickBoxControllerBuilder.create(
                                 opt
                             )
-                        }.build()
-                        ).option(
-                            Option.createBuilder<TimerDirection>().name(
-                            Component.literal(
-                                "Timer Direction"
-                            )
-                        ).description(
-                            OptionDescription.of(
-                                Component.literal(
-                                    "Set whether the timer counts up or down."
-                                )
-                            )
-                        ).binding(TimerDirection.UP, {
-                            if (net.minecraft.client.Minecraft.getInstance().level != null) TimerManager.currentData.direction
-                            else GlobalConfigManager.config.timerDirection
-                        }, { newVal ->
-                            GlobalConfigManager.config.timerDirection = newVal
-                            if (net.minecraft.client.Minecraft.getInstance().level != null) {
-                                TimerManager.currentData.direction = newVal
-                                TimerManager.save()
-                            }
-                        }).controller { opt ->
-                            EnumControllerBuilder.create(
-                                opt
-                            ).enumClass(
-                                TimerDirection::class.java
-                            ).formatValue {
-                                Component.literal(
-                                    it.displayName
-                                )
-                            }
                         }.build()
                         ).build()
                 ).group(
@@ -304,7 +273,7 @@ object AdvancedTimerConfigScreen {
                                     "The color of the timer when paused."
                                 )
                             )
-                        ).binding(Color.GRAY, {
+                        ).binding(Color(0xAAAAAA), {
                             Color(
                                 GlobalConfigManager.config.pausedColor
                             )
@@ -319,7 +288,39 @@ object AdvancedTimerConfigScreen {
                 ).build()
             ).category(
                 ConfigCategory.createBuilder().name(Component.literal("Events & Behavior")).group(
-                    OptionGroup.createBuilder().name(Component.literal("Countdown Mode"))
+                    OptionGroup.createBuilder().name(Component.literal("Timer Mode"))
+                        .option(
+                            Option.createBuilder<TimerDirection>().name(
+                                Component.literal(
+                                    "Timer Direction"
+                                )
+                            ).description(
+                                OptionDescription.of(
+                                    Component.literal(
+                                        "Set whether the timer counts up or down."
+                                    )
+                                )
+                            ).binding(TimerDirection.UP, {
+                                if (net.minecraft.client.Minecraft.getInstance().level != null) TimerManager.currentData.direction
+                                else GlobalConfigManager.config.timerDirection
+                            }, { newVal ->
+                                GlobalConfigManager.config.timerDirection = newVal
+                                if (net.minecraft.client.Minecraft.getInstance().level != null) {
+                                    TimerManager.currentData.direction = newVal
+                                    TimerManager.save()
+                                }
+                            }).controller { opt ->
+                                EnumControllerBuilder.create(
+                                    opt
+                                ).enumClass(
+                                    TimerDirection::class.java
+                                ).formatValue {
+                                    Component.literal(
+                                        it.displayName
+                                    )
+                                }
+                            }.build()
+                        )
                         .option(
                             Option.createBuilder<Int>().name(
                                 Component.literal(
@@ -331,7 +332,7 @@ object AdvancedTimerConfigScreen {
                                         "The number of hours to count down from."
                                     )
                                 )
-                            ).binding(0, {
+                            ).binding(1, {
                                 if (net.minecraft.client.Minecraft.getInstance().level != null) TimerManager.currentData.countdownHours
                                 else GlobalConfigManager.config.countdownHours
                             }, { newVal ->
@@ -668,93 +669,6 @@ object AdvancedTimerConfigScreen {
                             IntegerSliderControllerBuilder.create(opt).range(0, 100).step(1)
                         }.build()
                         ).build()
-                ).build()
-            ).category(
-                ConfigCategory.createBuilder().name(Component.literal("Profiles")).group(
-                    OptionGroup.createBuilder().name(Component.literal("Profile Management")).option(
-                        ButtonOption.createBuilder().name(
-                            Component.literal(
-                                "Active Profile: ${GlobalConfigManager.activeProfile}"
-                            )
-                        ).description(
-                            OptionDescription.of(
-                                Component.literal(
-                                    "Click to cycle to the next available profile. Available profiles: ${
-                                        GlobalConfigManager.getAvailableProfiles().joinToString(", ")
-                                    }"
-                                )
-                            )
-                        ).action { yaclScreen, _ ->
-                            GlobalConfigManager.cycleProfile()
-                            net.minecraft.client.Minecraft.getInstance().setScreen(
-                                AdvancedTimerConfigScreen.create(
-                                    yaclScreen
-                                )
-                            )
-                        }.build()
-                    ).option(
-                        Option.createBuilder<String>().name(
-                        Component.literal(
-                            "New Profile Name"
-                        )
-                    ).description(
-                        OptionDescription.of(
-                            Component.literal(
-                                "Enter a name for the new profile here, then click 'Create Profile'."
-                            )
-                        )
-                    ).binding("", {
-                        GlobalConfigManager.newProfileName
-                    }, { newVal ->
-                        GlobalConfigManager.newProfileName = newVal
-                    }).controller { opt ->
-                        StringControllerBuilder.create(
-                            opt
-                        )
-                    }.build()
-                    ).option(
-                        ButtonOption.createBuilder().name(
-                            Component.literal(
-                                "Create Profile"
-                            )
-                        ).description(
-                            OptionDescription.of(
-                                Component.literal(
-                                    "Click to save current settings into the new profile."
-                                )
-                            )
-                        ).action { yaclScreen, _ ->
-                            if (GlobalConfigManager.newProfileName.isNotBlank()) {
-                                GlobalConfigManager.createAndSwitchProfile(
-                                    GlobalConfigManager.newProfileName
-                                )
-                                net.minecraft.client.Minecraft.getInstance().setScreen(
-                                    AdvancedTimerConfigScreen.create(
-                                        yaclScreen
-                                    )
-                                )
-                            }
-                        }.build()
-                    ).option(
-                        ButtonOption.createBuilder().name(
-                            Component.literal(
-                                "Delete Current Profile"
-                            )
-                        ).description(
-                            OptionDescription.of(
-                                Component.literal(
-                                    "Click to delete the current active profile (cannot delete 'default')."
-                                )
-                            )
-                        ).action { yaclScreen, _ ->
-                            GlobalConfigManager.deleteCurrentProfile()
-                            net.minecraft.client.Minecraft.getInstance().setScreen(
-                                AdvancedTimerConfigScreen.create(
-                                    yaclScreen
-                                )
-                            )
-                        }.build()
-                    ).build()
                 ).build()
             ).build().generateScreen(parent)
     }

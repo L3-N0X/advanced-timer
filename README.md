@@ -1,31 +1,12 @@
-# Advanced Timer
+![Advanced Timer](https://cdn.modrinth.com/data/cached_images/b1f9825a5c1b070f6a6a59547a4856c182fa8f5a.png)
 
-A highly customizable Minecraft timer mod with extensive color customization, gradient effects, auto-pause features, and per-world/server timer storage. Works with both **Fabric** and **NeoForge**.
+A highly customizable Minecraft timer mod with extensive color customization, gradient effects, auto-pause features, and per-world/server timer storage. Works with both **Fabric** and **NeoForge**. Does **NOT** use the Action Bar!
+
+[![Available for Fabric](https://cdn.modrinth.com/data/cached_images/b223b5e2e5aca714ff700c82ca4f40f8fbc64b04_0.webp)](https://modrinth.com/mod/sodium/versions?l=fabric) [![Available for NeoForge](https://cdn.modrinth.com/data/cached_images/ba996a98da1c91c804209715787b2ead6aff023b.png)](https://modrinth.com/mod/sodium/versions?l=neoforge)
+
+[Open Demo](https://g.goett.top/y0g12)
 
 ## Features
-
-### Multiloader Support
-- Works seamlessly with both **Fabric** and **NeoForge** mod loaders
-- Same feature set regardless of mod loader
-
-### Per-World/Server Timer Storage
-- Automatically saves timer state per world/server
-- Switch between worlds or servers without losing your timer data
-- Supports multiple concurrent timers (one per world/server)
-
-### Timer Modes
-- **Count Up** - Track elapsed time from zero
-- **Count Down** - Configurable countdown timer with custom hours, minutes, and seconds
-- Timer end actions: `Off`, `Title`, or `Chat` message
-
-### Auto-Pause System
-Automatically pauses the timer on configurable events:
-- Dragon Kill
-- Wither Kill
-- Elder Guardian Kill
-- Warden Kill
-- Player Death
-- Leaving the game/world
 
 ### Color & Visual Customization
 - **Primary & Secondary Timer Colors** - Set custom colors for single or gradient modes
@@ -38,13 +19,35 @@ Automatically pauses the timer on configurable events:
   - Change color when paused
 
 ### Timer Display
-- **Multiple Time Formats**: `HH:MM:SS`, `MM:SS`, `HH:MM:SS:MS`, `MM:SS:MS`
+- **Multiple Time Formats**: `DD:HH:MM`, `DD:HH:MM:SS`, `Dd Hh Mm Ss` and more!
 - **Flexible Positioning**:
   - Above action bar
   - Top left/center/right
   - Bottom left/center/right
   - Custom coordinates
 - **HUD Toggle** - Show/hide timer via command
+
+### Auto-Pause System
+Automatically pauses the timer on configurable events:
+- Dragon Kill
+- Wither Kill
+- Elder Guardian Kill
+- Warden Kill
+- Player Death
+- Leaving the game/world
+
+### Multiloader Support
+- Works seamlessly with both **Fabric** and **NeoForge** mod loaders
+
+### Per-World/Server Timer Storage
+- Automatically saves timer state per world/server
+- Switch between worlds or servers without losing your timer data
+- Supports multiple concurrent timers (one per world/server)
+
+### Timer Modes
+- **Count Up** - Track elapsed time from zero
+- **Count Down** - Configurable countdown timer with custom hours, minutes, and seconds
+- Timer end actions: `Off`, `Title`, or `Chat` message
 
 ### Commands
 
@@ -58,7 +61,7 @@ Automatically pauses the timer on configurable events:
 | `/timer show` | Show the timer HUD |
 | `/timer config` | Open the config menu |
 | `/timer help` | Display help message |
-| `/timer time add <time>` | Add time to the timer (e.g., `1h30m`, `5m30s`) |
+| `/timer time add <time>` | Add time to the timer in seconds, minutes, hours, days (e.g., `0 30`, `0 0 2`) |
 | `/timer time set <time>` | Set the timer to a specific time |
 
 ### Configuration Menu
@@ -99,4 +102,4 @@ Full GUI configuration via **Yet Another Config Library (YACL)**:
 
 ## License
 
-This project is available under CC0 license.
+This project is available under the MIT license.

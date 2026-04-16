@@ -30,13 +30,13 @@ object ClientEventDetector {
                                     net.minecraft.network.chat.Component.literal(
                                                     "The countdown timer has reached 0!"
                                             )
-                                            .withColor(0xFF5555),false
+                                            .withColor(0xff8579),false
                             )
                         }
                         TimerEndAction.TITLE -> {
                             mc.gui.setTitle(
                                     net.minecraft.network.chat.Component.literal("Timer stopped!")
-                                            .withColor(0xFF5555)
+                                            .withColor(0xff8579)
                             )
                             mc.gui.setSubtitle(net.minecraft.network.chat.Component.empty())
                             mc.gui.setTimes(10, 70, 20)

@@ -1,9 +1,9 @@
 package de.lenox.client
 
 data class GlobalConfig(
-    var timerColor: Int = 0xFF8fe163.toInt(),
-    var secondTimerColor: Int = 0xFF00ecd0.toInt(),
-    var enableGradient: Boolean = false,
+    var timerColor: Int = 0xFF99DE5D.toInt(),
+    var secondTimerColor: Int = 0xFF22A6E5.toInt(),
+    var enableGradient: Boolean = true,
     var animateGradient: Boolean = true,
     var animationSpeed: Float = 1.0f,
     var gradientVisibility: Int = 50,

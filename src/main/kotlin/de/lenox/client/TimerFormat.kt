@@ -3,7 +3,7 @@ package de.lenox.client
 import kotlin.time.Duration.Companion.milliseconds
 
 enum class TimerFormat(val pattern: String) {
-    HH_MM("[dd:]hh:mm"), HH_MM_SS("[dd:]hh:mm:ss"), H_MM_SS("[h:]mm:ss"), TEXT("[d'd ']h'h 'm'm 's's'"), TEXT_PADDED("[d'd ']h'h 'mm'm 'ss's'");
+    HH_MM("[dd:]hh:mm"), HH_MM_SS("[dd:]hh:mm:ss"), H_MM_SS("[d:][h:]mm:ss"), TEXT("[d'd '][h'h '][m'm ']s's'"), TEXT_PADDED("[d'd '][h'h '][mm'm '][ss's']");
 
     val displayName: String
         get() = format(7509000L) // Example: 2h 5m 9s

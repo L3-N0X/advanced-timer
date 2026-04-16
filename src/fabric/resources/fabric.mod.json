@@ -11,7 +11,7 @@
 		"homepage": "https://modrinth.com/mod/advanced-timer",
 		"sources": "https://github.com/L3-N0X/advanced-timer"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/advanced-timer/icon.png",
 	"environment": "client",
 	"entrypoints": {
