@@ -130,10 +130,6 @@ tasks.named<Jar>("jar").configure {
 }
 
 publishMods {
-	// Only publish subprojects
-	if (project == rootProject) {
-		enabled.set(false)
-	}
 
 	// 1. Set the release file based on the active loader
 	file.set(tasks.named<Jar>("jar").get().archiveFile)
