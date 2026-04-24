@@ -22,11 +22,11 @@ val isNeoForge = stonecutter.current.project.endsWith("-neoforge")
 sourceSets {
 	main {
 		if (isFabric) {
-			kotlin.srcDir("src/fabric/kotlin")
-			resources.srcDir("src/fabric/resources")
+			kotlin.srcDir(rootProject.file("src/fabric/kotlin"))
+			resources.srcDir(rootProject.file("src/fabric/resources"))
 		} else if (isNeoForge) {
-			kotlin.srcDir("src/neoforge/kotlin")
-			resources.srcDir("src/neoforge/resources")
+			kotlin.srcDir(rootProject.file("src/neoforge/kotlin"))
+			resources.srcDir(rootProject.file("src/neoforge/resources"))
 		}
 	}
 }
@@ -132,11 +132,11 @@ tasks.named<Jar>("jar").configure {
 publishMods {
 
 	// 1. Set the release file based on the active loader
-	file.set(tasks.named<Jar>("jar").get().archiveFile)
-
 	if (isFabric) {
+		file.set(tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar").get().archiveFile)
 		modLoaders.add("fabric")
 	} else if (isNeoForge) {
+		file.set(tasks.named<Jar>("jar").get().archiveFile)
 		modLoaders.add("neoforge")
 	}
 
