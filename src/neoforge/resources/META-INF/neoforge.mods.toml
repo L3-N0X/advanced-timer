@@ -27,8 +27,8 @@ Adds a timer with many features like placing it anywhere on the screen, changing
     side="BOTH"
 
 [[dependencies.advanced_timer]]
-    modId="yacl"
+    modId="yet_another_config_lib_v3"
     type="required"
-    versionRange="[3.8.1,)"
+    versionRange="[3.8.2,)"
     ordering="NONE"
     side="BOTH"
