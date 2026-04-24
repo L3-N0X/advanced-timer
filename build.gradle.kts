@@ -19,19 +19,14 @@ group = mavenGroup
 val isFabric = stonecutter.current.project.endsWith("-fabric")
 val isNeoForge = stonecutter.current.project.endsWith("-neoforge")
 
-println("Project ${project.name}: isFabric=$isFabric, isNeoForge=$isNeoForge, stonecutter.current.project=${stonecutter.current.project}")
-
 sourceSets {
 	main {
-		kotlin.srcDirs(rootProject.file("src/main/kotlin"))
-		resources.srcDirs(rootProject.file("src/main/resources"))
-
 		if (isFabric) {
-			kotlin.srcDir(rootProject.file("src/fabric/kotlin"))
-			resources.srcDir(rootProject.file("src/fabric/resources"))
+			kotlin.srcDir("src/fabric/kotlin")
+			resources.srcDir("src/fabric/resources")
 		} else if (isNeoForge) {
-			kotlin.srcDir(rootProject.file("src/neoforge/kotlin"))
-			resources.srcDir(rootProject.file("src/neoforge/resources"))
+			kotlin.srcDir("src/neoforge/kotlin")
+			resources.srcDir("src/neoforge/resources")
 		}
 	}
 }
@@ -135,14 +130,17 @@ tasks.named<Jar>("jar").configure {
 }
 
 publishMods {
+	// Only publish subprojects
+	if (project == rootProject) {
+		enabled.set(false)
+	}
+
 	// 1. Set the release file based on the active loader
+	file.set(tasks.named<Jar>("jar").get().archiveFile)
+
 	if (isFabric) {
-		// Fabric Loom outputs the final mod to the remapJar task
-		file.set(tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar").get().archiveFile)
 		modLoaders.add("fabric")
 	} else if (isNeoForge) {
-		// NeoForge ModDevGradle outputs the final mod to the standard jar task
-		file.set(tasks.named<Jar>("jar").get().archiveFile)
 		modLoaders.add("neoforge")
 	}
 
