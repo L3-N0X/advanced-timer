@@ -19,14 +19,19 @@ group = mavenGroup
 val isFabric = stonecutter.current.project.endsWith("-fabric")
 val isNeoForge = stonecutter.current.project.endsWith("-neoforge")
 
+println("Project ${project.name}: isFabric=$isFabric, isNeoForge=$isNeoForge, stonecutter.current.project=${stonecutter.current.project}")
+
 sourceSets {
 	main {
+		kotlin.srcDirs(rootProject.file("src/main/kotlin"))
+		resources.srcDirs(rootProject.file("src/main/resources"))
+
 		if (isFabric) {
-			kotlin.srcDir("src/fabric/kotlin")
-			resources.srcDir("src/fabric/resources")
+			kotlin.srcDir(rootProject.file("src/fabric/kotlin"))
+			resources.srcDir(rootProject.file("src/fabric/resources"))
 		} else if (isNeoForge) {
-			kotlin.srcDir("src/neoforge/kotlin")
-			resources.srcDir("src/neoforge/resources")
+			kotlin.srcDir(rootProject.file("src/neoforge/kotlin"))
+			resources.srcDir(rootProject.file("src/neoforge/resources"))
 		}
 	}
 }
@@ -36,7 +41,6 @@ if (isFabric) {
 	apply(plugin = "dev.kikugie.fletching-table.fabric")
 } else if (isNeoForge) {
 	apply(plugin = "net.neoforged.moddev")
-	apply(plugin = "dev.kikugie.fletching-table.neoforge")
 }
 
 repositories {
