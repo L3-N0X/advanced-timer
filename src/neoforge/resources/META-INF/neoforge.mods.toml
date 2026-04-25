@@ -15,20 +15,20 @@ Adds a timer with many features like placing it anywhere on the screen, changing
 [[dependencies.advanced_timer]]
     modId="neoforge"
     type="required"
-    versionRange="[21.11,)"
+    versionRange="${neoforge_version_range}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.advanced_timer]]
     modId="minecraft"
     type="required"
-    versionRange="[1.21.11,)"
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.advanced_timer]]
     modId="yet_another_config_lib_v3"
     type="required"
-    versionRange="[3.8.2,)"
+    versionRange="${yacl_version_range}"
     ordering="NONE"
     side="BOTH"
