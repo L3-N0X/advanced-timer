@@ -28,5 +28,7 @@ stonecutter {
 	create(rootProject) {
 		version("1.21.11-fabric", "1.21.11")
 		version("1.21.11-neoforge", "1.21.11")
+		version("26.1.2-fabric", "26.1.2")
+		version("26.1.2-neoforge", "26.1.2")
 	}
 }
