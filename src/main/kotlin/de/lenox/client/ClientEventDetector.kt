@@ -25,18 +25,25 @@ object ClientEventDetector {
                     wasCountdownZero = true
                     when (config.timerEndAction) {
                         TimerEndAction.OFF -> {}
-                        TimerEndAction.CHAT -> {
-                            player.displayClientMessage(
-                                    net.minecraft.network.chat.Component.literal(
-                                                    "The countdown timer has reached 0!"
-                                            )
-                                            .withColor(0xff8579),false
+                        TimerEndAction.CHAT -> { //? if >=26.1 {
+                            player.sendSystemMessage(
+                                net.minecraft.network.chat.Component.literal(
+                                    "The countdown timer has reached 0!"
+                                ).withColor(0xff8579)
+                            ) //?}
+                            //? if <26.1 {
+                            /*player.displayClientMessage(
+                                net.minecraft.network.chat.Component.literal(
+                                    "The countdown timer has reached 0!"
+                                ).withColor(0xff8579),
+                                false
                             )
+                             *///?}
                         }
+
                         TimerEndAction.TITLE -> {
                             mc.gui.setTitle(
-                                    net.minecraft.network.chat.Component.literal("Timer stopped!")
-                                            .withColor(0xff8579)
+                                net.minecraft.network.chat.Component.literal("Timer stopped!").withColor(0xff8579)
                             )
                             mc.gui.setSubtitle(net.minecraft.network.chat.Component.empty())
                             mc.gui.setTimes(10, 70, 20)
@@ -60,11 +67,7 @@ object ClientEventDetector {
         wasDead = isDead
 
         // 2. Check boss kills
-        if (!config.autoPauseOnDragonKill &&
-                        !config.autoPauseOnWitherKill &&
-                        !config.autoPauseOnElderGuardianKill &&
-                        !config.autoPauseOnWardenKill
-        ) {
+        if (!config.autoPauseOnDragonKill && !config.autoPauseOnWitherKill && !config.autoPauseOnElderGuardianKill && !config.autoPauseOnWardenKill) {
             return
         }
 

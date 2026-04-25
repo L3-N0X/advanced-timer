@@ -1,13 +1,19 @@
 package de.lenox.client
 
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+//? if >=26.1
+import net.minecraft.client.gui.GuiGraphicsExtractor
+//? if <26.1
+//import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 
 object TimerHudRenderer {
     var isVisible: Boolean = false
 
-    fun render(graphics: GuiGraphics) {
+    //? if >=26.1
+    fun render(graphics: GuiGraphicsExtractor) {
+        //? if <26.1
+        //fun render(graphics: GuiGraphics) {
         if (!isVisible) return
 
         GlobalConfigManager.ensureLoaded()
@@ -126,11 +132,17 @@ object TimerHudRenderer {
 
                 val finalColor = 0xFF000000.toInt() or (r shl 16) or (g shl 8) or b
 
-                graphics.drawString(font, charComponent, currentX.toInt(), y, finalColor, true)
+                //? if >=26.1
+                graphics.text(font, charComponent, currentX.toInt(), y, finalColor, true)
+                //? if <26.1
+                //graphics.drawString(font, charComponent, currentX.toInt(), y, finalColor, true)
                 currentX += font.width(charComponent)
             }
         } else {
-            graphics.drawString(font, textComponent, x, y, color, true)
+            //? if >=26.1
+            graphics.text(font, textComponent, x, y, color, true)
+            //? if <26.1
+            //graphics.drawString(font, textComponent, x, y, color, true)
         }
     }
 }
